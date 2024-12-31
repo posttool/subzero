@@ -111,14 +111,10 @@ class ControlPanel extends Component {
     editorChangeValue(editor) {
         this._prompts[editor.name] = editor.data;
         db.put(STORE_PROMPTS, { id: editor.name, data: editor.data }, function (e) {
-            console.log("editorChangeValue");
-            console.log(editor.name);
         });
     }
 
     addPrompt(dbInstance) {
-        console.log("addPrompt");
-        console.log(dbInstance);
         this._prompts[dbInstance.value.id] = dbInstance.value.data;
         this._editors[dbInstance.value.id].data = dbInstance.value.data;
     }
