@@ -12,6 +12,59 @@ function dofetch(apiUrl, params, f) {
         });
 }
 
+
+function dofetchGemini(prompt, handler, count = 0) {
+    if (logger == null) {
+        logger = console;
+    }
+    logger.log('----------------------')
+    logger.log(prompt);
+    let jsonPrompt = getGeminiContentParams(prompt);
+    dofetch(GEMINI_SERVICE, { method: "POST", body: JSON.stringify(jsonPrompt) }, function (jsonData) {
+        let objectData = null;
+        try {
+            objectData = parseGeminiJson(jsonData.candidates[0].content.parts[0].text);
+            logger.log(objectData);
+        } catch (e) {
+            logger.error(e);
+            if (count < 3) {
+                logger.log('ERROR retry in 1');
+                setTimeout(function () { dofetchGemini(prompt, handler, count + 1); }, 1000);
+            } else {
+                logger.log("GIVING UP");
+            }
+            return;
+        }
+        handler(objectData);
+    });
+}
+
+const PROMPT_JSON = "Format the answer in JSON.  Make Sure the JSON is valid. Use this schema:";
+
+function GEM(templatedPrompt, data, handler) {
+    if (Object.hasOwn(templatedPrompt, "instruction")) {
+        templatedPrompt = templatedPrompt.instruction + PROMPT_JSON + templatedPrompt.jsonSchema;
+    }
+    dofetchGemini(processTemplate(templatedPrompt, data), handler);
+}
+
+function parseGeminiJson(text) {
+    text = text.replace("```json", "");
+    text = text.replace("```", "");
+    let srcs = JSON.parse(text);
+    return srcs;
+}
+
+function getGeminiContentParams(text) {
+    return {
+        contents: [{
+            parts: [{
+                text: text
+            }]
+        }]
+    };
+}
+
 function random(a) {
     return Math.floor(Math.random() * a);
 }
@@ -35,9 +88,11 @@ function getByName(array, name) {
 function isArray(x) {
     return Array.isArray(x);
 }
+
 function isObject(x) {
     return typeof x === 'object' && !isArray(x) && x !== null;
 }
+
 function callbackCounter(callback) {
     let o = {
         count: 0,
@@ -50,47 +105,6 @@ function callbackCounter(callback) {
         }
     }
     return o;
-}
-
-function bezierCurve(ctx, points, f, t) {
-    if (typeof (f) == 'undefined') f = 0.3;
-    if (typeof (t) == 'undefined') t = 0.6;
-
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-
-    var m = 0;
-    var dx1 = 0;
-    var dy1 = 0;
-
-    var dx2 = 0;
-    var dy2 = 0;
-
-    var preP = points[0];
-
-    for (var i = 1; i < points.length; i++) {
-        var curP = points[i];
-        var nexP = points[i + 1];
-        if (nexP) {
-            m = (nexP.y - preP.y) / (nexP.x - preP.x);
-            dx2 = (nexP.x - curP.x) * -f;
-            dy2 = dx2 * m * t;
-        } else {
-            dx2 = 0;
-            dy2 = 0;
-        }
-
-        ctx.bezierCurveTo(
-            preP.x - dx1, preP.y - dy1,
-            curP.x + dx2, curP.y + dy2,
-            curP.x, curP.y
-        );
-
-        dx1 = dx2;
-        dy1 = dy2;
-        preP = curP;
-    }
-    ctx.stroke();
 }
 
 function getVideoIdFromUrl(url) {
@@ -185,7 +199,6 @@ function setSelectValue(selEl, value) {
 function format(str, color, parent) {
     return $$({ el: 'span', text: str, parent: parent, color: color });
 }
-
 
 function syntaxHighlight(json) {
     if (typeof json != 'string') {

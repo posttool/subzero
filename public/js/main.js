@@ -1,4 +1,5 @@
 const GOOGLE_SEARCH = "https://www.googleapis.com/customsearch/v1?key=AIzaSyBXzoVT6ti7Ul9x0suevmJkDFuafYKsDE4&cx=836c3d378e8094ce4&q=";
+const GEMINI_SERVICE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyBtGPTUHs5hALl55M47Ugkg79o4wsn-efQ";
 
 const COLOR_LIST = ["blue", "green", "red"];
 let colorIdx = random(COLOR_LIST.length) - 1;
