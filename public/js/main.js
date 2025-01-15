@@ -57,9 +57,11 @@ function renderTopicOverview(topic, idx) {
         questionsButton.data = { text: "Explore" };
         questionsButton.addListener("click", function () {
             let progress = new Progress(questionsButton);
-            topic.addQuestions(function () {
+            // topic.addQuestions(function () {
+            topic.addExploration(function () {
                 progress.remove();
-                renderExplorationWithQuestions(topic);
+                // renderExplorationWithQuestions(topic);
+                renderExplorationForDay(topic);
             });
         });
     }
@@ -69,7 +71,7 @@ function renderTopicOverview(topic, idx) {
             video.data = day;
             bodyText.data = { text: day.goal };
             let exploreButton = new ExploreButton(topicCard);
-            exploreButton.data = { text: "Day " + (topic.meta.day + 1) };
+            exploreButton.data = { text: "Explore" };//{ text: "Day " + (topic.meta.day + 1) };
             exploreButton.addListener("click", function () {
                 renderExplorationForDay(topic);
             });
@@ -142,7 +144,7 @@ function renderExplorationForDay(topic) {
     heading.data = { text: topic.overview.heading };
     headline.data = { text: topic.overview.headline };
 
-    let dayLabel = new ArticleHeadline(topicCard, { text: "Day " + (topic.meta.day + 1) });
+    // let dayLabel = new ArticleHeadline(topicCard, { text: "Day " + (topic.meta.day + 1) });
     let controls = new Row(topicCard);
     let back = new Button(controls, { text: "Back" });
     let next = new Button(controls, { text: "Next" });
@@ -151,7 +153,7 @@ function renderExplorationForDay(topic) {
 
     let setDay = function (idx) {
         topic.setDay(idx, function () {
-            dayLabel.data = { text: "Day " + (topic.meta.day + 1) };
+            // dayLabel.data = { text: "Day " + (topic.meta.day + 1) };
             renderDay();
         });
     }
@@ -213,7 +215,6 @@ function renderExplorationForDay(topic) {
 //////////////////////////////////////////////////////////////////////////////////
 
 function getPrompt(name) {
-    console.log(controlPanel.prompts[name])
     return controlPanel.prompts[name];
 }
 
@@ -224,8 +225,8 @@ function getLogger() {
 function main() {
     controlPanel = new ControlPanel();
     controlsEl.appendChild(controlPanel.el);
-    logger = controlPanel.logger;
-
+    logger = getLogger();
+    
     db.init(function () {
         db.getAll(STORE_TOPIC_INSTANCE, function (instance) {
             let topic = new TopicInstance();
@@ -235,12 +236,13 @@ function main() {
             });
         });
 
-        controlPanel.init(function(){
-            logger.log("CP INIT");
-        })
+        // DISABLE USER PROMPTS FOR NOW
+        // controlPanel.init(function(){
+        //     logger.log("CP INIT");
+        // })
     });
 
-    logger.log("TOPIC EXPLORER v1.5");
+    logger.log("TOPIC EXPLORER v1.6");
       
 }
 

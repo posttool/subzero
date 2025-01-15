@@ -12,7 +12,6 @@ function dofetch(apiUrl, params, f) {
         });
 }
 
-
 function dofetchGemini(prompt, handler, count = 0) {
     if (logger == null) {
         logger = console;

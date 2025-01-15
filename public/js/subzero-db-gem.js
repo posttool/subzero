@@ -69,12 +69,12 @@ propertyName: "metaQuestion"
     plan: {
         instruction: `I'm interested in improving and learning about: \${name}.
 
-For the next step, I'd like you to create a 15-day plan of updates, giving me a sub-topic of each day, delving more into the sub-topic with an insight that frames it and makes it relevant, as well as a recommendation for what I can do.
+For the next step, I'd like you to create a 7-day plan of updates, giving me a sub-topic of each day, delving more into the sub-topic with an insight that frames it and makes it relevant, as well as a recommendation for what I can do.
 Write in a style appropriate for me: \${options}. 
 Use these topic preferences: \${topicPreferences}
 `,
         jsonSchema: `{ 
-plan: "Overview of the 15-day plan with an explanation of how a goal or achievement has been broken down",
+plan: "Overview of the plan with an explanation of how a goal or achievement has been broken down",
 days: [ 
 {
 goal: "Ten or so words about how this subtopic helps achieve understanding of the topic", 
@@ -173,8 +173,8 @@ class TopicInstance {
             });
         }
         if (_this.meta.state >= TOPIC_STATE_QUESTIONS) {
-            cc.count++;
-            _this.addQuestions(cc.complete);
+            // cc.count++;
+            // _this.addQuestions(cc.complete);
         }
         if (_this.meta.state >= TOPIC_STATE_EXPLORATION) {
             cc.count++;

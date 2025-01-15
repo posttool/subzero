@@ -93,7 +93,7 @@ class VideoPlayer extends Component {
                 ifv.width = "336";
                 ifv.height = "200";
                 ifv.frameborder = "0";
-                ifv.src = "http://www.youtube.com/embed/" + getVideoIdFromUrl(data.link) + "?enablejsapi=1";
+                ifv.src = "https://www.youtube.com/embed/" + getVideoIdFromUrl(data.link) + "?enablejsapi=1";
                 ifv.style.position = "relative";
                 ifv.style.top = "-2px";
                 ifv.style.left = "-2px";

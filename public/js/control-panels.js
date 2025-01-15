@@ -7,15 +7,26 @@ const INTEREST_OPTIONS = [
     "Undefined",
 ];
 
+// const DEBUG_TOPICS = [
+//     "Learn how to juggle",
+//     "Record cover art",
+//     "The Absurdity of Surrealist Painting",
+//     "Chess strategy",
+//     "Mastering the Art of Mezcal Cocktails (with a twist)",
+//     "Creating a Stop-Motion Animation Film",
+//     "The History of Zapotec Weaving Techniques",
+//     "Refresh summer wardrobe",
+//     "Help me buy a new house"
+// ];
 const DEBUG_TOPICS = [
-    "Learn how to juggle",
-    "Record cover art",
-    "The Absurdity of Surrealist Painting",
-    "Chess strategy",
-    "Mastering the Art of Mezcal Cocktails (with a twist)",
-    "Creating a Stop-Motion Animation Film",
-    "The History of Zapotec Weaving Techniques"
-];
+    "Developing Mindfullness practice",
+    "Cold Plunging",
+    "Learning Guitar",
+    "Learning a new Language",
+    "Learning Japanese",
+    "Thanksgiving dinner",
+    "Week in Hawaii with kids"
+]
 
 const PROMPT_ORDER = ["topics", "overview", "editorial", "questions", "plan"];
 
@@ -109,9 +120,12 @@ class ControlPanel extends Component {
     }
 
     editorChangeValue(editor) {
+        // todo add hysteresis
         this._prompts[editor.name] = editor.data;
-        db.put(STORE_PROMPTS, { id: editor.name, data: editor.data }, function (e) {
-        });
+        // disable saving for now
+        // db.put(STORE_PROMPTS, { id: editor.name, data: editor.data }, function (e) {
+        //     // probably should show toasty thing confirming save
+        // });
     }
 
     addPrompt(dbInstance) {
