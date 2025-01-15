@@ -186,16 +186,15 @@ function renderExplorationForDay(topic) {
         new Headline(dayContainer, { text: day.goal })
         new ArticleHeadline(dayContainer, { text: "Insight" });
         new BodyText(dayContainer, { text: day.insight });
-        let insightArticles =
-            new Article1(dayContainer);
+        let insightArticles = new Article1(dayContainer);
         new ArticleHeadline(dayContainer, { text: "Recommendation" });
         new BodyText(dayContainer, { text: day.recommendation });
         let recommendArticles =
             new Article2(dayContainer);
 
-        dofetch(GOOGLE_SEARCH + encodeURI(day.insightSearchQuery) + "&num=3", {}, function (search) {
+        dofetch(GOOGLE_SEARCH + encodeURI("site:youtube.com " +day.insightSearchQuery) + "&num=3", {}, function (search) {
             new PreviewCard(insightArticles, search.items[0]);
-            let r = new Row(insightArticles, "flex-row");
+            let r = new Row(insightArticles, {class: "flex-row"});
             new PreviewCard(r, search.items[1], "half-width");
             new PreviewCard(r, search.items[2], "half-width");
         });
