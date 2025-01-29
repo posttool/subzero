@@ -1,40 +1,11 @@
 const INTEREST_OPTIONS = [
-    // "8 years old, California",
-    // "19 years old",
-    // "Minimalist music, Abstract art",
-    // "33 years old, lives in New York, visiting Tokyo",
-    // "Lives in Oaxaca",
     "27-year-old product marketing manager in San Francisco, that enjoys photography and meditation",
     "5th grader in New York, with an interest in STEM",
     "68-year-old retired teacher in Florida, that likes to garden",
     "35-year-old freelance graphic designer in London, that enjoys live music and yoga",
     "19-year-old college student in Illinois, that likes gaming and anime",
-    "42-year-old stay-at-home mom in Colorado, that is involved in her community",
-    "Undefined",
+    "42-year-old stay-at-home mom in Colorado, that is involved in her community"
 ];
-
-// const DEBUG_TOPICS = [
-//     "Learn how to juggle",
-//     "Record cover art",
-//     "The Absurdity of Surrealist Painting",
-//     "Chess strategy",
-//     "Mastering the Art of Mezcal Cocktails (with a twist)",
-//     "Creating a Stop-Motion Animation Film",
-//     "The History of Zapotec Weaving Techniques",
-//     "Refresh summer wardrobe",
-//     "Help me buy a new house"
-// ];
-const DEBUG_TOPICS = [
-    "Developing Mindfullness practice",
-    "Cold Plunging",
-    "Learning Guitar",
-    "Learning a new Language",
-    "How to refresh my wardrobe for the Spring",
-    "Learning Japanese",
-    "Thanksgiving dinner",
-    "Week in Hawaii with kids"
-]
-
 const PROMPT_ORDER = ["topics", "overview", "editorial", "questions", "plan"];
 
 class ControlPanel extends Component {
@@ -61,9 +32,9 @@ class ControlPanel extends Component {
             openClose(true);
         });
         let topicPanel = new CPTopic(panelContainer);
-        topicPanel.addInterests();
-        topicPanel.addDefaultTopics();
-        topicPanel.addButtons();
+        topicPanel.addEditControls();
+        // topicPanel.addDefaultTopics();
+        // topicPanel.addButtons();
 
         let _this = this;
         PROMPT_ORDER.forEach(function (p, idx) {
@@ -116,10 +87,10 @@ class ControlPanel extends Component {
 
     init(callback) {
         let _this = this;
-        // db.getAll(STORE_PROMPTS, function (instance) {
-        //     _this.addPrompt(instance);
+        db.getAll(STORE_PROMPTS, function (instance) {
+            _this.addPrompt(instance);
             if (callback) callback(_this);
-        // });
+        });
     }
 
     get prompts() {
@@ -129,10 +100,10 @@ class ControlPanel extends Component {
     editorChangeValue(editor) {
         // todo add hysteresis
         this._prompts[editor.name] = editor.data;
-        // disable saving for now
-        // db.put(STORE_PROMPTS, { id: editor.name, data: editor.data }, function (e) {
-        //     // probably should show toasty thing confirming save
-        // });
+        db.put(STORE_PROMPTS, { id: editor.name, data: editor.data }, function (e) {
+            // probably should show toasty thing confirming save
+            console.log("SAVED PROMPT "+editor.name);
+        });
     }
 
     addPrompt(dbInstance) {
@@ -253,38 +224,40 @@ class CPTopic extends Component {
 
     constructor(parent) {
         super(parent);
-        this.preferences = null;
         this.top = new Component(this);
         this.bottom = new Component(this);
+        this.preferences = null;
     }
 
-    addInterests() {
+    addEditControls(){
+        let _this = this;
+
         let defaultInterests = new Component(this.top);
+
         new ArticleHeadline(defaultInterests, { text: "Interests" });
-        let p = new CPSelector(defaultInterests);
-        p.data = INTEREST_OPTIONS;
-        p.selector.select(random(INTEREST_OPTIONS.length));
-        p.addListener("value", function () {
+        let preferences = this.preferences = new TextArea(defaultInterests);
+        preferences.data = oneOf(INTEREST_OPTIONS);
 
+        new Button(this.top, {text: "Generate topics"}, function(){
+            _this.addTopicsForPrefs();
         });
-        this.preferences = p;
-        return defaultInterests;
-    }
 
-    addDefaultTopics() {
-        let preferences = this.preferences;
         let defaultTopics = new Component(this.top);
-        new ArticleHeadline(defaultTopics, { text: "Debug Topics" });
-        let topicChooser = new CPSelector(defaultTopics);
-        topicChooser.data = DEBUG_TOPICS;
-        topicChooser.addListener("value", function (selectedTopic) {
-            newTopicOverview(selectedTopic, preferences.value);
+        new ArticleHeadline(defaultTopics, { text: "Topic" });
+        let topicChooser = new TextArea(defaultTopics);
+        topicChooser.data = "";
+
+        new Button(this.top, {text: "Create card"}, function(){ 
+            console.log(topicChooser.data, preferences.data)
+            newTopicOverview(topicChooser.data, preferences.data);
         });
+        new Button(this.top, {text: "Clear all explorations"}, function(){ deleteAll(); });
+
     }
 
     addTopicsForPrefs() {
-        let preferences = this.preferences.value;
-        let defaultTopics = new Component(this.top);
+        let preferences = this.preferences.data;
+        let defaultTopics = new Component(this.bottom);
         new ArticleHeadline(defaultTopics, { text: "Topics" });
         new BodyText(defaultTopics, { text: preferences });
         let topicChooser = new CPSelector(defaultTopics);
@@ -293,25 +266,12 @@ class CPTopic extends Component {
             progress.remove();
             topicChooser.data = topics.map(topic => topic.name);
             topicChooser.addListener("value", function (selectedTopic) {
-                console.log("select " + selectedTopic)
                 newTopicOverview(selectedTopic, preferences);
             });
         });
         return defaultTopics;
     }
 
-    addButtons() {
-        let _this = this;
-        let buttons = new Component(this.bottom);
-        let b1 = new Button(buttons, {text: "Generate topics for selected interests"});
-        b1.click(function(){
-            _this.addTopicsForPrefs();
-        });
-        let b2 = new Button(buttons, {text: "Clear all explorations"});
-        b2.click(function(){
-            deleteAll();
-        });
-    }
 }
 
 

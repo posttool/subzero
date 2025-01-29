@@ -13,6 +13,40 @@ class TextComponent extends Component {
     }
 }
 
+class Input extends Component {
+    constructor(parent) {
+        super(parent, { class: "input" });
+    }
+    draw() {
+        this.input = $$({parent: this.el, el: "input"});
+        this.input.addEventListener("change", this._fireChange.bind(this));
+        if (this._data) {
+            this.input.value = this._data;
+        }
+    }
+    _fireChange(e){
+        this._data = this.input.value;
+        this.emit("value", this._data);
+    }
+}
+
+class TextArea extends Component {
+    constructor(parent) {
+        super(parent, { class: "input" });
+    }
+    draw() {
+        this.input = $$({parent: this.el, el: "textarea"});
+        this.input.addEventListener("change", this._fireChange.bind(this));
+        if (this._data) {
+            this.input.value = this._data;
+        }
+    }
+    _fireChange(e){
+        this._data = this.input.value;
+        this.emit("value", this._data);
+    }
+}
+
 class ExploreTopicCard extends Component {
     constructor(parent, options = { class: "card1 blue" }) {
         super(parent, options);
@@ -50,9 +84,12 @@ class BodyText extends TextComponent {
 }
 
 class Button extends TextComponent {
-    constructor(parent, data) {
+    constructor(parent, data, clickHandler) {
         super(parent, { class: "button" }, data);
         this.clickable();
+        if (clickHandler) {
+            this.addListener("click", clickHandler);
+        }
     }
 }
 

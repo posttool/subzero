@@ -184,10 +184,10 @@ function renderExplorationForDay(topic) {
         let v = new VideoPlayer(dayContainer);
         v.data = day;
         new Headline(dayContainer, { text: day.goal })
-        new ArticleHeadline(dayContainer, { text: "Insight" });
+        // new ArticleHeadline(dayContainer, { text: "Insight" });
         new BodyText(dayContainer, { text: day.insight });
         let insightArticles = new Article1(dayContainer);
-        new ArticleHeadline(dayContainer, { text: "Recommendation" });
+        // new ArticleHeadline(dayContainer, { text: "Recommendation" });
         new BodyText(dayContainer, { text: day.recommendation });
         let recommendArticles =
             new Article2(dayContainer);
@@ -235,13 +235,12 @@ function main() {
             });
         });
 
-        // DISABLE USER PROMPTS FOR NOW
-        // controlPanel.init(function(){
-        //     logger.log("CP INIT");
-        // })
+        controlPanel.init(function(){
+            logger.log("CP INIT");
+        })
     });
 
-    logger.log("TOPIC EXPLORER v1.6");
+    logger.log("TOPIC EXPLORER v1.7");
       
 }
 

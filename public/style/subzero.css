@@ -38,7 +38,26 @@ body {
     padding: 0;
     margin: 0;
     color: white;
+    font-family: "Google Sans Flex", serif;
 }
+
+input, textarea {
+    font-size: 16px;
+    padding: 12px;
+}
+
+.row,
+.flex-row {
+    display: inline-flex;
+    flex-direction: row;
+    padding: 12px 0 12px 0;
+    column-gap: 12px;
+}
+
+.column {
+    padding: 12px;
+}
+
 
 #info {
     width: 430px;
@@ -127,7 +146,6 @@ body {
 }
 
 .card1 {
-    font-family: "Google Sans Flex", serif;
     position: absolute;
     width: 347px;
     border-radius: 48px;
